@@ -3,16 +3,18 @@ use bevy::window::PrimaryWindow;
 
 pub const SPEED: f32 = 500.0; // pixels per second
 pub const PLAYER_SIZE: f32 = 64.0; // pixels
+pub const NUM_ENEMIES: usize = 5;
 
 fn main() {
     App::new().add_plugins(DefaultPlugins)
         .add_systems(Startup, (
             spawn_camera,
-            spawn_player
+            spawn_player,
+            spawn_enemies,
         ))
         .add_systems(Update, (
+            confine_player,
             move_player,
-            confine_player
         ))
         .run();
 }
@@ -39,6 +41,30 @@ pub fn spawn_player(
         },
         Player {}
     ));
+}
+
+pub fn spawn_enemies(
+    mut commands: Commands,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    asset_server: Res<AssetServer>,
+) {
+    let win = window_query.get_single().unwrap();
+    let width_win = win.width();
+    let height_win = win.height();
+
+
+    for _ in 0..NUM_ENEMIES {
+        let x_rand = rand::random::<f32>() * width_win;
+        let y_rand = rand::random::<f32>() * height_win;
+        
+        commands.spawn(
+            SpriteBundle{
+                transform: Transform::from_xyz(x_rand, y_rand, 0.0),
+                texture: asset_server.load("sprites/ball_red_large.png"),
+                ..default()
+            }
+        );
+    }
 }
 
 pub fn spawn_camera(
@@ -105,3 +131,5 @@ pub fn confine_player(
     // confine player
     transform.translation = transform.translation.max(min_transform).min(max_transform);
 }
+
+
