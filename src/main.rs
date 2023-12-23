@@ -6,7 +6,8 @@ pub const PLAYER_SIZE: f32 = 64.0; // pixels
 pub const NUM_ENEMIES: usize = 5;
 
 fn main() {
-    App::new().add_plugins(DefaultPlugins)
+    App::new()
+        .add_plugins(DefaultPlugins)
         .add_systems(Startup, (
             spawn_camera,
             spawn_player,
@@ -49,13 +50,11 @@ pub fn spawn_enemies(
     asset_server: Res<AssetServer>,
 ) {
     let win = window_query.get_single().unwrap();
-    let width_win = win.width();
-    let height_win = win.height();
-
+    alexander.
 
     for _ in 0..NUM_ENEMIES {
-        let x_rand = rand::random::<f32>() * width_win;
-        let y_rand = rand::random::<f32>() * height_win;
+        let x_rand = rand::random::<f32>() * win.width();
+        let y_rand = rand::random::<f32>() * win.height();
         
         commands.spawn(
             SpriteBundle{
